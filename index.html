@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sports Q&A - Powered by Gemini</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🏆 Sports Q&A</h1>
+    <p>Ask any question related to sports — football, cricket, tennis, NBA, and more!</p>
+    
+    <textarea id="promptInput" placeholder="E.g., Who won the 2022 FIFA World Cup?"></textarea>
+    <button id="generateBtn">Get Answer</button>
+
+    <div id="responseContainer">
+      <h3>Answer:</h3>
+      <p id="answerText">Your answer will appear here...</p>
+    </div>
+  </div>
+
+  <script>
+    const generateBtn = document.getElementById('generateBtn');
+    const promptInput = document.getElementById('promptInput');
+    const answerText = document.getElementById('answerText');
+
+    generateBtn.addEventListener('click', async () => {
+      const prompt = promptInput.value.trim();
+      if (!prompt) {
+        alert("Please enter a question related to sports.");
+        return;
+      }
+
+      answerText.textContent = "Loading...";
+
+      try {
+        const response = await fetch('/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          answerText.textContent = data.answer;
+        } else {
+          answerText.textContent = data.error || 'Something went wrong.';
+        }
+      } catch (error) {
+        console.error(error);
+        answerText.textContent = 'Failed to fetch answer.';
+      }
+    });
+  </script>
+</body>
+</html>
